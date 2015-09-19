@@ -30,13 +30,14 @@ intervalData=aggregate(activity$steps, by=list(activity$interval),function(x) me
 intervalData=rename(intervalData,c("x"="Steps","Group.1"="Interval")); #Rename columns to help with legibility.
 plot(Steps~Interval,data=intervalData,type='l', main="Steps vs Interval time");
 maxInterval=intervalData[which.max(intervalData$Steps),1];
-paste("Max Interval is",maxInterval); #Report the mean and Median
+paste("Interval with most step taken is interval",maxInterval); #Report the interval with the most steps taken
 ```
 ## Imputing missing values
+Our strategy to impute the missing data is to take the average steps taken for the corresponding interval and replacing the N/As with the corresponding interval. We decide on this strategy as there are days where there are no data available and taking the average over the day results no additional information gained
 ```{r}
 imputeActivity=activity;
 
-imputeActivity= transform(activity, steps=ifelse(is.na(steps),intervalData$Steps[intervalData$Interval==interval],steps)); #Imputing NA by taking average of corresponding interval (Gave up on trying to make this work, anyone who knows why only the first set of NA was successfully imputed, while the remaining set of NAs was ignored and is willing to explain why, is greatly appreciated)
+### imputeActivity= transform(activity, steps=ifelse(is.na(steps),intervalData$Steps[intervalData$Interval==interval],steps)); #Imputing NA by taking average of corresponding interval (Gave up on trying to make this work, anyone who knows why only the first set of NA was successfully imputed, while the remaining set of NAs was ignored and is willing to explain why, is greatly appreciated)
 
 for(i in 1:nrow(imputeActivity)) { steps=imputeActivity[i,'steps'];interval=imputeActivity[i,'interval']; if(is.na(steps)) {imputeActivity[i,'steps']=intervalData$Steps[intervalData$Interval==interval];};} # A less efficient way of transforming the data using for loops, at least it works as intended 
 
